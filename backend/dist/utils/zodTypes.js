@@ -20,9 +20,14 @@ const zod_1 = __importDefault(require("zod"));
 //   ratings : Rating[]
 // }
 exports.signupSchema = zod_1.default.object({
-    name: zod_1.default.string().min(1),
+    name: zod_1.default.string().min(20).max(60),
     email: zod_1.default.email(),
-    password: zod_1.default.string().min(8),
+    password: zod_1.default.string().min(8).max(16).refine(val => /[A-Z]/.test(val), {
+        message: "Password must contain at least one uppercase letter",
+    })
+        .refine(val => /[!@#$%^&*(),.?":{}|<>]/.test(val), {
+        message: "Password must contain at least one special character",
+    }), // at least one uppercase letter and one special character.
     address: zod_1.default.string().optional(),
     role: zod_1.default.enum(['USER', 'ADMIN', 'OWNER']).optional(),
 });
