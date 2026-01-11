@@ -1,6 +1,7 @@
 import express, {Request,Response} from "express"
 import cors from "cors"
 import dotenv from "dotenv"
+import rootRouter from "./router";
 
 // configures dotenv to work in your application
 dotenv.config();
@@ -14,6 +15,9 @@ app.use(express.json()); // for body parsing
 app.get("/", (request:Request, response:Response) => { 
   response.status(200).send("Hello World");
 }); 
+
+// root routers
+app.use(rootRouter)
 
 app.listen(PORT, () => { 
   console.log("Server running at PORT: ",PORT ); 

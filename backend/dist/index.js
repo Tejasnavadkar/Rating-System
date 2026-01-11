@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const cors_1 = __importDefault(require("cors"));
 const dotenv_1 = __importDefault(require("dotenv"));
+const router_1 = __importDefault(require("./router"));
 // configures dotenv to work in your application
 dotenv_1.default.config();
 const app = (0, express_1.default)();
@@ -15,6 +16,8 @@ app.use(express_1.default.json()); // for body parsing
 app.get("/", (request, response) => {
     response.status(200).send("Hello World");
 });
+// root routers
+app.use(router_1.default);
 app.listen(PORT, () => {
     console.log("Server running at PORT: ", PORT);
 }).on("error", (error) => {

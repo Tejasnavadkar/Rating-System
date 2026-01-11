@@ -1,13 +1,18 @@
-import { PrismaClient } from "@prisma/client";
+// import { PrismaClient } from "./generated/prisma";
+import { PrismaClient } from '@prisma/client'
 
 declare global {  // declare the global type declare global runtime ka nahi, sirf TypeScript ko samjhane ke liye 
   // allow global caching in dev (HMR)
   var __prisma: PrismaClient | undefined;
 }
 
-const options:ConstructorParameters<typeof PrismaClient>[0] = process.env.PRISMA_ACCELERATE_URL // is there prisma accelerate then use accelerate(cashing) otherwise use database url 
-  ? { accelerateUrl: process.env.PRISMA_ACCELERATE_URL }
-  : { adapter: { url: process.env.DATABASE_URL } };
+const options: ConstructorParameters<typeof PrismaClient>[0] = {
+  datasources: {
+    db: {
+      url: process.env.PRISMA_ACCELERATE_URL || process.env.DATABASE_URL,
+    },
+  },
+};
 
 const prisma = global.__prisma ?? new PrismaClient(options); // Dev mode mein DB connection explosion se bachata hai
 
