@@ -2,9 +2,7 @@ import { truncates } from 'bcryptjs'
 import jwt ,{JwtPayload} from 'jsonwebtoken'
 
 interface VerifyTokenResult {
-    valid: boolean;
     payload?: string | JwtPayload;
-    error?: unknown;
 }
 
 // interface
@@ -20,7 +18,7 @@ export const generateJwt = (jwtPayload:JwtPayload) => {
         return token
     } catch (error) {
         if (error instanceof Error) {
-           console.log("error while generate token:--",error)
+           console.log("error while:--",error)
            throw new Error(error.message);
        } else {
            throw new Error(String(error));
@@ -30,15 +28,20 @@ export const generateJwt = (jwtPayload:JwtPayload) => {
 
 
 
-export const verifyToken = (token: string): VerifyTokenResult => {
+export const verifyToken = (token: string): string | JwtPayload => {
     try {
         if (!process.env.JWT_SECRET) {
             throw new Error(`jwt not find`);
         }
 
-        const payload = jwt.verify(token, process.env.JWT_SECRET);
-        return { valid: true, payload };
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        return decoded
     } catch (error) {
-        return { valid: false, error };
+      if( error instanceof Error){
+           console.log('err in verify token',error)
+       throw new Error(error.message)  
+      }  else{
+        throw new Error(String(error)) 
+      }
     }
 };

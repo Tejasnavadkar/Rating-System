@@ -67,7 +67,10 @@ const signupController = async (req:signupReqType,res:Response)=>{
     } catch (error) {
        if (error instanceof Error) {
            console.log("error in signupController:--",error)
-           throw new Error(error.message);
+          return res.status(500).json({
+            message: 'Error while signup',
+            error: error.message
+        })
        } else {
            throw new Error(String(error));
        }
@@ -115,7 +118,10 @@ const loginController = async (req:loginREqType,res:Response) => {
    } catch (error) {
     if (error instanceof Error) {
            console.log("error in signupController:--",error)
-           throw new Error(error.message);
+            return res.status(500).json({
+            message: 'Error while login',
+            error: error.message
+        })
        } else {
            throw new Error(String(error));
        }

@@ -16,7 +16,7 @@ const generateJwt = (jwtPayload) => {
     }
     catch (error) {
         if (error instanceof Error) {
-            console.log("error while generate token:--", error);
+            console.log("error while:--", error);
             throw new Error(error.message);
         }
         else {
@@ -30,11 +30,17 @@ const verifyToken = (token) => {
         if (!process.env.JWT_SECRET) {
             throw new Error(`jwt not find`);
         }
-        const payload = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET);
-        return { valid: true, payload };
+        const decoded = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET);
+        return decoded;
     }
     catch (error) {
-        return { valid: false, error };
+        if (error instanceof Error) {
+            console.log('err in verify token', error);
+            throw new Error(error.message);
+        }
+        else {
+            throw new Error(String(error));
+        }
     }
 };
 exports.verifyToken = verifyToken;
