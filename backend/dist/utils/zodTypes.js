@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.loginSchema = exports.storeSchema = exports.signupSchema = void 0;
+exports.resetPasswordSchema = exports.loginSchema = exports.storeSchema = exports.signupSchema = void 0;
 const zod_1 = __importDefault(require("zod"));
 // enum Role {
 //     USER,
@@ -56,4 +56,13 @@ exports.storeSchema = zod_1.default.object({
 exports.loginSchema = zod_1.default.object({
     email: zod_1.default.email(),
     password: zod_1.default.string().min(8),
+});
+exports.resetPasswordSchema = zod_1.default.object({
+    email: zod_1.default.email(),
+    password: zod_1.default.string().min(8).max(16).refine(val => /[A-Z]/.test(val), {
+        message: "Password must contain at least one uppercase letter",
+    })
+        .refine(val => /[!@#$%^&*(),.?":{}|<>]/.test(val), {
+        message: "Password must contain at least one special character",
+    }), // at least one uppercase letter and one special character.
 });

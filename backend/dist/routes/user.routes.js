@@ -9,4 +9,7 @@ const authMiddleware_1 = require("../middlewares/authMiddleware");
 const router = express_1.default.Router();
 router.get('/getUser', authMiddleware_1.AuthCheckMiddleware, user_controller_1.default.getUserController);
 router.get('/getAllUsers', authMiddleware_1.AuthCheckMiddleware, user_controller_1.default.getAllUsersController);
+router.post('/verifyEmail', user_controller_1.default.verifyMailController);
+router.post('/resetPassword', user_controller_1.default.resetPasswordController);
+router.get('/getUserById/:id', authMiddleware_1.AuthCheckMiddleware, user_controller_1.default.getUserByIdController);
 exports.default = router;

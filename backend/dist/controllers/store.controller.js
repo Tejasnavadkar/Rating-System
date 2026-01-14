@@ -130,7 +130,78 @@ const getAllStoreController = (req, res) => __awaiter(void 0, void 0, void 0, fu
         }
     }
 });
+const rateStoreController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { storeId, value } = req.body;
+        const userId = req.userId;
+        if (typeof userId !== "number") {
+            return res.status(401).json({ message: "User not authenticated" });
+        }
+        if (!value || value < 1 || value > 5) {
+            return res.status(400).json({
+                message: 'Score must be between 1 and 5'
+            });
+        }
+        const isStoreExist = yield prismaClient_1.default.store.findUnique({
+            where: {
+                id: storeId
+            }
+        });
+        if (!isStoreExist) {
+            return res.status(404).json({
+                msg: 'store not exist'
+            });
+        }
+        // An upsert is a database operation that either updates an existing entry or inserts a new entry when no current entry is found
+        const upsertedValue = yield prismaClient_1.default.rating.upsert({
+            where: {
+                userId_storeId: { userId, storeId }
+            },
+            create: {
+                userId,
+                storeId,
+                value
+            },
+            update: {
+                value
+            }
+        });
+        // calculate overall rating of store
+        const rating = yield prismaClient_1.default.rating.findMany({
+            where: {
+                storeId: storeId
+            }
+        });
+        console.log("rating-", rating);
+        const averageRating = Math.round(rating.reduce((acc, item) => acc + item.value, 0) / rating.length);
+        // console.log(sum)
+        yield prismaClient_1.default.store.update({
+            where: {
+                id: storeId
+            },
+            data: {
+                overAllRating: averageRating
+            }
+        });
+        return res.status(200).json({
+            msg: "rating submited",
+            overAllRating: averageRating
+        });
+    }
+    catch (error) {
+        if (error instanceof Error) {
+            return res.status(500).json({
+                message: 'Error while store creation',
+                error: error.message
+            });
+        }
+        else {
+            throw new Error(String(error));
+        }
+    }
+});
 exports.default = {
     createStoreController,
-    getAllStoreController
+    getAllStoreController,
+    rateStoreController
 };

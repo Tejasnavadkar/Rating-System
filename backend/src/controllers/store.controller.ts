@@ -150,10 +150,20 @@ const getAllStoreController = async (req:Request | rateStoreReqType,res:Response
 
 }
 
-const rateStore = async (req:CustomRequest,res:Response) => {
+const rateStoreController = async (req:CustomRequest,res:Response) => {
     try {
         const {storeId,value} = req.body
         const userId = req.userId
+
+         if (typeof userId !== "number") {
+            return res.status(401).json({ message: "User not authenticated" });
+        }
+
+        if (!value || value < 1 || value > 5) {
+        return res.status(400).json({
+            message: 'Score must be between 1 and 5'
+        });
+    }
         
        const isStoreExist = await prisma.store.findUnique({
             where:{
@@ -166,6 +176,51 @@ const rateStore = async (req:CustomRequest,res:Response) => {
                 msg:'store not exist'
             })
         }
+     // An upsert is a database operation that either updates an existing entry or inserts a new entry when no current entry is found
+       const upsertedValue = await prisma.rating.upsert({
+            where: {
+                userId_storeId: { userId, storeId }
+            },
+            create: {
+                userId,
+                storeId,
+                value
+            },
+            update: {
+                value
+            }
+        })
+
+        // calculate overall rating of store
+
+       const rating = await prisma.rating.findMany({
+            where:{
+                storeId:storeId
+            }
+        })
+
+        console.log("rating-",rating)
+
+        const averageRating = Math.round(rating.reduce((acc,item)=>acc + item.value,0)/rating.length)
+        // console.log(sum)
+
+        await prisma.store.update({
+            where:{
+                 id:storeId
+            },
+            data:{
+                overAllRating:averageRating
+            }
+        })
+
+       return res.status(200).json({
+            msg:"rating submited",
+            overAllRating:averageRating
+        })
+
+
+
+
     } catch (error) {
          if(error instanceof Error){
                 return res.status(500).json({
@@ -181,5 +236,6 @@ const rateStore = async (req:CustomRequest,res:Response) => {
 
 export default {
     createStoreController,
-    getAllStoreController
+    getAllStoreController,
+    rateStoreController
 }

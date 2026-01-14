@@ -58,5 +58,15 @@ export const loginSchema = z.object({
   password: z.string().min(8),
 })
 
+export const resetPasswordSchema = z.object({
+   email: z.email(),
+  password: z.string().min(8).max(16).refine(val => /[A-Z]/.test(val), {
+      message: "Password must contain at least one uppercase letter",
+    })
+    .refine(val => /[!@#$%^&*(),.?":{}|<>]/.test(val), {
+      message: "Password must contain at least one special character",
+    }), // at least one uppercase letter and one special character.
+})
+
 export type signupInputType = z.output<typeof signupSchema>
 export type storeInputType = z.output<typeof storeSchema>

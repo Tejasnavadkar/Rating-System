@@ -6,6 +6,7 @@ const router = express.Router()
 
 router.post('/createStore',AuthCheckMiddleware,storeController.createStoreController)
 router.get('/getAllStores',AuthCheckMiddleware,storeController.getAllStoreController)
+router.post('/rateStore',AuthCheckMiddleware,storeController.rateStoreController)
 
 
 export default router

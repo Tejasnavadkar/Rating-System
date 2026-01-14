@@ -9,4 +9,5 @@ const store_controller_1 = __importDefault(require("../controllers/store.control
 const router = express_1.default.Router();
 router.post('/createStore', authMiddleware_1.AuthCheckMiddleware, store_controller_1.default.createStoreController);
 router.get('/getAllStores', authMiddleware_1.AuthCheckMiddleware, store_controller_1.default.getAllStoreController);
+router.post('/rateStore', authMiddleware_1.AuthCheckMiddleware, store_controller_1.default.rateStoreController);
 exports.default = router;
