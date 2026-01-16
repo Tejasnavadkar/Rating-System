@@ -1,6 +1,9 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import z from 'zod'
+import { signupSchema } from '../../shared/zodSchema/ZodeSchema'
+import apiClient from '../../shared/libs/apiClient'
+import { useNavigate } from 'react-router-dom';
 
 
 interface signupType {
@@ -11,19 +14,6 @@ interface signupType {
     role: string
 }
 
-const signupSchema = z.object({
-  name: z.string().min(20).max(60),
-  email: z.email(),
-  password: z.string().min(8).max(16).refine(val => /[A-Z]/.test(val), {
-      message: "Password must contain at least one uppercase letter",
-    })
-    .refine(val => /[!@#$%^&*(),.?":{}|<>]/.test(val), {
-      message: "Password must contain at least one special character",
-    }), // at least one uppercase letter and one special character.
-  address: z.string().optional(),
-  role: z.enum(['USER', 'ADMIN', 'OWNER']).optional(),
-})
-
 const SignUp = () => {
 
    const [signupInfo,setSignUpInfo] = useState<signupType>({
@@ -33,10 +23,9 @@ const SignUp = () => {
     address: "",
     role: "USER"
 })
-const [fieldErrors,setFieldErrors] = useState<
-  z.ZodFormattedError<signupType> | null
->(null)
+const [fieldErrors,setFieldErrors] = useState<z.ZodFormattedError<signupType> | null>(null)
 
+  const navigate = useNavigate()
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>{
         const field = e.target.name 
@@ -49,7 +38,7 @@ const [fieldErrors,setFieldErrors] = useState<
         })
   }
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
    
     try {
         e.preventDefault()
@@ -64,10 +53,20 @@ const [fieldErrors,setFieldErrors] = useState<
         return
       }
 
-     console.log(signupInfo)
+    //  console.log(signupInfo)
 
-    //   api call
-    
+    //   api call (apiClient)
+
+    const response = await apiClient.post('/api/auth/signup',signupInfo)
+
+    if(response.status == 200){
+        console.log("api-response-",response.data)
+        localStorage.setItem('token',response.data.jwtToken)
+          localStorage.setItem('logedInUser',JSON.stringify(response.data.user))
+        navigate('/userDashboard')
+    }
+      
+     
      
 
 

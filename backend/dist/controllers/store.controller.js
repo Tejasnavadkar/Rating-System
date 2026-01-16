@@ -185,6 +185,7 @@ const rateStoreController = (req, res) => __awaiter(void 0, void 0, void 0, func
         });
         return res.status(200).json({
             msg: "rating submited",
+            updatedRating: upsertedValue,
             overAllRating: averageRating
         });
     }

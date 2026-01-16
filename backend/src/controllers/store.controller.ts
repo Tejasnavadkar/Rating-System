@@ -215,6 +215,7 @@ const rateStoreController = async (req:CustomRequest,res:Response) => {
 
        return res.status(200).json({
             msg:"rating submited",
+            updatedRating:upsertedValue,
             overAllRating:averageRating
         })
 

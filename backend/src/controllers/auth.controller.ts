@@ -57,9 +57,10 @@ const signupController = async (req:signupReqType,res:Response)=>{
 
     const jwtToken = generateJwt(jwtPayload)
 
+    console.log(createdUser)
     res.status(200).json({
         msg:"user Created..",
-        user:createUser,
+        user:createdUser,
         jwtToken
     })
 

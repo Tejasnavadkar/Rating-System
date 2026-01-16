@@ -51,9 +51,10 @@ const signupController = (req, res) => __awaiter(void 0, void 0, void 0, functio
         };
         // todo : generate token
         const jwtToken = (0, jwtHandler_1.generateJwt)(jwtPayload);
+        console.log(createdUser);
         res.status(200).json({
             msg: "user Created..",
-            user: auth_Services_1.createUser,
+            user: createdUser,
             jwtToken
         });
     }
