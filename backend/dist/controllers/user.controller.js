@@ -71,6 +71,16 @@ const getAllUsersController = (req, res) => __awaiter(void 0, void 0, void 0, fu
                     }
                 ]
             },
+            select: {
+                id: true,
+                name: true,
+                email: true,
+                password: true,
+                address: true,
+                role: true,
+                ratings: true,
+                stores: true
+            }
         });
         return res.status(201).json({
             user: allUsers

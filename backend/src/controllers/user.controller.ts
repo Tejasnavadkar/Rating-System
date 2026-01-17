@@ -80,6 +80,19 @@ const getAllUsersController = async (req:Request,res:Response) => {
                         }
                     ]
                 },
+
+            select:{
+                
+                    id: true,
+                    name: true,
+                    email: true,
+                    password:true,
+                    address: true,
+                    role: true,
+                    ratings:true,
+                    stores:true
+                    
+            }
         })
 
        return res.status(201).json({
