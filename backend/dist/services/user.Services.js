@@ -19,6 +19,50 @@ const getUserById = (id) => __awaiter(void 0, void 0, void 0, function* () {
         const user = yield prismaClient_1.default.user.findUnique({
             where: {
                 id: id
+            },
+            select: {
+                id: true,
+                name: true,
+                email: true,
+                address: true,
+                role: true,
+                ratings: {
+                    select: {
+                        id: true,
+                        value: true,
+                        storeId: true,
+                        user: {
+                            select: {
+                                name: true,
+                                email: true
+                            }
+                        }
+                    }
+                },
+                stores: {
+                    select: {
+                        id: true,
+                        name: true,
+                        email: true,
+                        address: true,
+                        ratings: {
+                            select: {
+                                id: true,
+                                value: true,
+                                storeId: true,
+                                user: {
+                                    select: {
+                                        id: true,
+                                        name: true,
+                                        email: true,
+                                        address: true
+                                    }
+                                }
+                            }
+                        },
+                        overAllRating: true
+                    }
+                },
             }
         });
         return user;

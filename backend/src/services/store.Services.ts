@@ -19,6 +19,7 @@ export const createStoreWithOwner = async (data:storeInputType) => {
                             email:OwnerEmail,
                             password:OwnerPassword,
                             address:OwnerAddress,
+                            role:"OWNER"
                         }
                     }
                 },

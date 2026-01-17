@@ -36,7 +36,8 @@ const signupController = (req, res) => __awaiter(void 0, void 0, void 0, functio
             name: name,
             email: email,
             hashedPassword: hashedPassword,
-            address: address
+            address: address,
+            role: role
         };
         // db call
         const createdUser = yield (0, auth_Services_1.createUser)(payload);

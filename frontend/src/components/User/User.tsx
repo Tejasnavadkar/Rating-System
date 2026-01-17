@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import NavBar from '../Common/NavBar'
 import apiClient from '../../shared/libs/apiClient'
 
@@ -116,16 +116,15 @@ const User = () => {
     return ()=> clearTimeout(timerId)
   },[searchInput])
 
-  // console.log('stors-',stores)
-  // console.log('ratings-',ratings)
 
+  // get & set current user
   useEffect(()=>{
      const userString = localStorage.getItem("logedInUser")
 
-  if (userString) {
-    const user: userType = JSON.parse(userString)
-    setCurrentUser(user)
-  }
+     if (userString) {
+       const user: userType = JSON.parse(userString)
+       setCurrentUser(user)
+     }
   },[])
 
   const getMyRating = (storeId:number) => {
@@ -179,13 +178,15 @@ const User = () => {
      }
   }
 
-  const handleSortField = (e) =>{
+  // set sort order and field
+  const handleSortField = (e:React.ChangeEvent<HTMLInputElement>) =>{
     setSortField(e.target.value)
   }
-  const handleSortOrder = (e) =>{
+  const handleSortOrder = (e:React.ChangeEvent<HTMLInputElement>) =>{
      setSortOrder(e.target.value)
   }
 
+  // sort handler
   const HandleSort = () =>{
        let newStores = []
       if(sortOrder ===  'asce'){
@@ -198,6 +199,7 @@ const User = () => {
       setStores(newStores)
   }
 
+  // sort effect
   useEffect(()=>{
     console.log({sortField,sortOrder})
     if(sortField !== "" && sortOrder !== ""){
@@ -238,7 +240,7 @@ const User = () => {
       {/* stores */}
       <div className='mt-16'>
         <div className='text-lg font-semibold'>Rate Stores</div>
-        <div>
+        {stores ? (<div>
          <div className='flex justify-between'>
            <div className='w-[35%]'>
             <input 
@@ -304,7 +306,7 @@ const User = () => {
               </tbody>
              </table>
           </div>
-        </div>
+        </div>) : (<div className='text-lg text-center font-semibold'>Stores not found...</div>)}
       </div>
       </div>
     </div>

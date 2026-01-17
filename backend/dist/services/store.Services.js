@@ -30,6 +30,7 @@ const createStoreWithOwner = (data) => __awaiter(void 0, void 0, void 0, functio
                         email: OwnerEmail,
                         password: OwnerPassword,
                         address: OwnerAddress,
+                        role: "OWNER"
                     }
                 }
             },

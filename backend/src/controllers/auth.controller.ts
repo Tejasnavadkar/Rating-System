@@ -35,7 +35,8 @@ const signupController = async (req:signupReqType,res:Response)=>{
             name:name,
             email:email,
             hashedPassword:hashedPassword,
-            address:address
+            address:address,
+            role:role
   }
 
     // db call

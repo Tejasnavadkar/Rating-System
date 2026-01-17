@@ -22,6 +22,7 @@ const createUser = (payload) => __awaiter(void 0, void 0, void 0, function* () {
             email: payload.email,
             password: payload.hashedPassword,
             address: (_a = payload.address) !== null && _a !== void 0 ? _a : "",
+            role: payload.role
         }
     });
     return createdUser;

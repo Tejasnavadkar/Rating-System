@@ -6,12 +6,14 @@ import SignUpPage from './Pages/AuthPages/SignUpPage'
 import UserDashboard from './Pages/DashBoardPages/UserDashboard'
 import OwnerDashboard from './Pages/DashBoardPages/OwnerDashboard'
 import AdminDashboard from './Pages/DashBoardPages/AdminDashboard'
+import { ContextProvider } from './context/Context'
 
 function App() {
 
   return (
     <>
        <div>
+         <ContextProvider>
           <BrowserRouter>
              <Routes>
                <Route path='/' element={<LoginPage/>}></Route>
@@ -21,6 +23,7 @@ function App() {
                  <Route path='/adminDashboard' element={<AdminDashboard/>}></Route>
              </Routes>
           </BrowserRouter>
+         </ContextProvider>
        </div>
     </>
   )

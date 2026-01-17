@@ -4,7 +4,8 @@ interface createUserType {
     name:string,
     email:string,
     hashedPassword:string,
-    address?:string
+    address?:string,
+    role?:"ADMIN" | "USER" | "OWNER"
 }
 
 export const createUser = async (payload:createUserType) => {
@@ -14,6 +15,7 @@ export const createUser = async (payload:createUserType) => {
             email:payload.email,
             password:payload.hashedPassword,
             address:payload.address ?? "",
+            role:payload.role
         }
     })
 
