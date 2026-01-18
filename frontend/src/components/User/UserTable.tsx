@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import apiClient from '../../shared/libs/apiClient'
 import { useStore } from '../../context/Context'
+import Loader from '../Common/Loader'
+import axios from 'axios'
 
 type storeType = {
                     id: number,
@@ -42,11 +44,12 @@ const UserTable = () => {
      const [searchInput,setSearchInput] = useState("")
      const [users,setUsers] = useState<usersType[] | null>(null)
 
-     const {setTotalUsers,setTotalUsersSubmittedRating} = useStore()
+     const {setTotalUsers,setTotalUsersSubmittedRating,isLoading,setLoading} = useStore()
       const tableHeadings:string[] = ['Name', 'Email','Address','Role']
 
      const fetchUsers = async () => {
-          const response = await apiClient.get('/api/user/getAllUsers',{
+          try {
+            const response = await apiClient.get('/api/user/getAllUsers',{
             params:{
                 filter:searchInput
             }
@@ -54,7 +57,19 @@ const UserTable = () => {
 
            if(response.status === 201){
           setUsers(response.data.user)
+          setLoading(false)
      }
+          }catch (error: unknown) {
+  setLoading(false);
+
+  if (axios.isAxiosError(error)) {
+   throw new Error(error.response?.data?.message);
+  } else if (error instanceof Error) {
+    throw new Error(error.message);
+  } else {
+    throw new Error("Unexpected error");
+  }
+}
      }
 
       useEffect(()=>{
@@ -106,6 +121,10 @@ const UserTable = () => {
         const handleSortOrder = (e:React.ChangeEvent<HTMLInputElement>) =>{
            setSortOrder(e.target.value)
         }
+  
+  if(isLoading){
+    return <Loader/>
+  }
 
   return (
     <div>

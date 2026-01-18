@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import NavBar from '../Common/NavBar'
 import apiClient from '../../shared/libs/apiClient'
+import Loader from '../Common/Loader'
+import { useStore } from '../../context/Context'
+import axios from 'axios'
 
 interface storeType {
            id: number,
@@ -42,6 +45,7 @@ const User = () => {
   const [rateValue,setRateValue] = useState<{[key:number]:number}>({})
   const [currentUser,setCurrentUser] = useState<userType | null>(null)
   const [searchInput,setSearchInput] = useState("")
+  // const [isLoading,setLoading] = useState<boolean>(true)
   // const [sortPayload,setSortPayload] = useState({
   //   sortField:"",
   //   sortOrder:""
@@ -49,6 +53,8 @@ const User = () => {
 
   const [sortField,setSortField] = useState("")
   const [sortOrder,setSortOrder] = useState("")
+
+  const {isLoading,setLoading} = useStore()
 
   const HandleSearch = async (e:React.ChangeEvent<HTMLInputElement>) => {
        setSearchInput(e.target.value)
@@ -63,8 +69,10 @@ const User = () => {
 })
      if(response.status === 201){
           setStores(response.data.stores)
+          setLoading(false)
      }
      } catch (error) {
+      setLoading(false)
        if(error instanceof Error){
         console.log(`[error in fetching stores]:${error.message}`)
        }else{
@@ -158,6 +166,7 @@ const User = () => {
       const response = await apiClient.post('/api/store/rateStore',payload)
 
       if(response.status == 200){
+        setLoading(false)
            setRateValue(prev=>{
             return {
               ...prev,
@@ -169,13 +178,17 @@ const User = () => {
            alert('rating submited...')
       }
 
-     } catch (error) {
-      if(error instanceof Error){
-        console.log(`[err in modifyRating]:${error.message}`)
-      }else{
-        console.log(`[err in modifyRating]:${String(error)}`)
-      }
-     }
+     } catch (error: unknown) {
+  setLoading(false);
+
+  if (axios.isAxiosError(error)) {
+   throw new Error(error.response?.data?.message);
+  } else if (error instanceof Error) {
+    throw new Error(error.message);
+  } else {
+    throw new Error("Unexpected error");
+  }
+}
   }
 
   // set sort order and field
@@ -208,6 +221,9 @@ const User = () => {
   },[sortField,sortOrder])
   
 
+  if(isLoading){
+    return <Loader/>
+  }
   
   return (
     <div>

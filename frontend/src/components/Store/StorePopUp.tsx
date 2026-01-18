@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react'
 import { createStoreSchema } from '../../shared/zodSchema/ZodeSchema'
 import z from 'zod'
 import apiClient from '../../shared/libs/apiClient'
+import axios from 'axios'
+import { AiOutlineClose } from 'react-icons/ai'
 
 interface StorePopUp {
     CreateStorePopUp:boolean,
@@ -32,6 +34,7 @@ const StorePopUp = ({CreateStorePopUp,setCreateStorePopUp}:StorePopUp) => {
     })
 
     const [fieldErrors,setFieldErrors] = useState<z.ZodFormattedError<storeInfo> | null>(null)
+    const [responseError,setResponseError] = useState<string | null>(null)
 
     useEffect(()=>{
         if(CreateStorePopUp){
@@ -58,9 +61,10 @@ const StorePopUp = ({CreateStorePopUp,setCreateStorePopUp}:StorePopUp) => {
       e.preventDefault()
       try {
        const result = createStoreSchema.safeParse(storeInfo)
-
+       setResponseError(null)
        if(!result.success){
             setFieldErrors(result.error.format())
+            return
        }
 
     //    api call
@@ -74,20 +78,24 @@ const StorePopUp = ({CreateStorePopUp,setCreateStorePopUp}:StorePopUp) => {
 
     }
 
-      } catch (error) {
-        if(error instanceof Error){
-        throw new Error(error.message)
-       }else{
-         throw new Error(String(error))
-    }
-      }
+      }catch (error: unknown) {
+
+  if (axios.isAxiosError(error)) {
+    console.log(error)
+   setResponseError(error.response?.data?.message ?? "Unexpected error");
+  } else if (error instanceof Error) {
+    setResponseError(error.message);
+  } else {
+   setResponseError("Unexpected error");
+  }
+}
   }
 
   return (
    <>
     {CreateStorePopUp && ( <div className='bg-black opacity-80 absolute left-0 right-0 top-0 bottom-0 z-50 h-full'></div>)}
       <div className='h-screen fixed top-0 left-0 right-0 flex justify-center items-center z-100'>
-         <button onClick={()=>setCreateStorePopUp(false)} className='text-white absolute top-5 right-7 cursor-pointer'>X</button>
+         <button onClick={()=>setCreateStorePopUp(false)} className='text-white absolute top-5 right-7 cursor-pointer'><AiOutlineClose /></button>
       <div className='w-[800px] '>
                     <form noValidate onSubmit={HandleSubmit}  className="space-y-5 bg-white rounded-md p-10 ">
                         <div className="block mb-1 font-medium text-gray-950">
@@ -203,7 +211,7 @@ const StorePopUp = ({CreateStorePopUp,setCreateStorePopUp}:StorePopUp) => {
                                         placeholder="Enter address"
                                     ></textarea>
                                   {fieldErrors?.OwnerAddress && <span className="text-sm text-red-600">{fieldErrors.OwnerAddress._errors[0]}</span>}
-
+                                  {responseError && <span className="text-sm text-red-600">{ responseError}</span>}  
                                 </div>
 
                                 {/* <div>

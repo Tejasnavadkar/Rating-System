@@ -83,11 +83,11 @@ const signupController = async (req:signupReqType,res:Response)=>{
 const loginController = async (req:loginREqType,res:Response) => {
    try {
     const body = req.body
-    const result =  loginSchema.safeParse(body)
+    // const result =  loginSchema.safeParse(body)
 
-     if(!result.success) {
-        return res.status(400).json({error:result.error.flatten()})
-    }
+    //  if(!result.success) {
+    //     return res.status(400).json({error:result.error.flatten()})
+    // }
 
      const isUserExist = await prisma.user.findUnique({where:{
         email:body.email

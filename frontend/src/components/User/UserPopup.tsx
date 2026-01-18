@@ -3,6 +3,8 @@ import { signupSchema } from '../../shared/zodSchema/ZodeSchema'
 import z from 'zod'
 import apiClient from '../../shared/libs/apiClient'
 import { useNavigate } from 'react-router-dom'
+import axios from 'axios'
+import { AiOutlineClose } from "react-icons/ai";
 
 interface UserPopUp {
     CreateUserPopUp:boolean,
@@ -31,6 +33,7 @@ const UserPopup = ({CreateUserPopUp,setCreateUserPopUp}:UserPopUp) => {
 
     const [fieldErrors,setFieldErrors] = useState<z.ZodFormattedError<userInfoType> | null>(null)
     const navigate =  useNavigate()
+    const [responseError,setResponseError] = useState<string | null>(null)
 
      useEffect(() => {
     if (CreateUserPopUp) {
@@ -69,13 +72,16 @@ const UserPopup = ({CreateUserPopUp,setCreateUserPopUp}:UserPopUp) => {
     }
 
 
-    } catch (error) {
-       if(error instanceof Error){
-        throw new Error(error.message)
-       }else{
-         throw new Error(String(error))
-    }
-    }
+    } catch (error: unknown) {
+
+  if (axios.isAxiosError(error)) {
+   setResponseError(error.response?.data?.message);
+  } else if (error instanceof Error) {
+    setResponseError(error.message);
+  } else {
+    setResponseError("Unexpected error");
+  }
+}
    
   }
 
@@ -90,7 +96,7 @@ const UserPopup = ({CreateUserPopUp,setCreateUserPopUp}:UserPopUp) => {
     <>
     {CreateUserPopUp && ( <div className='bg-black opacity-80 absolute left-0 right-0 top-0 bottom-0 z-50 h-full'></div>)}
       <div className='fixed top-0 h-full right-0 left-0 z-50 border flex justify-center items-center'>
-         <button onClick={()=>setCreateUserPopUp(false)} className='text-white absolute top-5 right-7 cursor-pointer'>X</button>
+         <button onClick={()=>setCreateUserPopUp(false)} className='text-white absolute top-5 right-7 cursor-pointer'><AiOutlineClose /></button>
        <div className='w-[400px] '>
                     <form noValidate onSubmit={HandleSubmit}  className="space-y-5 bg-white rounded-md p-10 ">
                         <div>
@@ -160,7 +166,9 @@ const UserPopup = ({CreateUserPopUp,setCreateUserPopUp}:UserPopUp) => {
                                 <option value="OWNER">Owner</option>
                                 <option value="ADMIN">Admin</option>
                             </select>
+                             {responseError && <span className="text-sm text-red-600">{ responseError}</span>}  
                         </div>
+                        
                         <button
                             type="submit"
                             className="w-full bg-blue-600 text-white py-2 rounded-xl hover:bg-blue-700 transition"

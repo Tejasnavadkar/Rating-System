@@ -75,10 +75,10 @@ const signupController = (req, res) => __awaiter(void 0, void 0, void 0, functio
 const loginController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const body = req.body;
-        const result = zodTypes_1.loginSchema.safeParse(body);
-        if (!result.success) {
-            return res.status(400).json({ error: result.error.flatten() });
-        }
+        // const result =  loginSchema.safeParse(body)
+        //  if(!result.success) {
+        //     return res.status(400).json({error:result.error.flatten()})
+        // }
         const isUserExist = yield prismaClient_1.default.user.findUnique({ where: {
                 email: body.email
             } });

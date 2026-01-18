@@ -12,7 +12,7 @@ const Admin = () => {
     const [CreateUserPopUp, setCreateUserPopUp] = useState<boolean>(false)
     const {totalStores,totalUsers,totalUsersSubmittedRating} = useStore()
     // const [users,setusersInAdmin] = useState()
-
+   
     const StorePopUpToggle = () => {
         setCreateStorePopUp(prev=>!prev)
     }

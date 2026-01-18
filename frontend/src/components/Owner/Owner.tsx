@@ -1,6 +1,9 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import NavBar from '../Common/NavBar'
 import apiClient from '../../shared/libs/apiClient'
+import { useStore } from '../../context/Context';
+import Loader from '../Common/Loader';
+import axios from 'axios';
 
 type Role = "ADMIN" | "USER" | "OWNER"
 
@@ -11,7 +14,7 @@ export interface User {
   name: string;
   email: string;
   address: string;
-  role: "USER" | "OWNER" | "ADMIN";
+  role: Role;
   ratings: UserRating[];
   stores: StoreWithRatings[];
 }
@@ -55,6 +58,7 @@ export interface StoreRatingUser {
 const Owner = () => {
 
   const [currentUser,setCurrentUser] = useState<User | null>(null)
+  const {isLoading,setLoading} = useStore()
 
   const fetchUser = async () => {
       try {
@@ -62,20 +66,30 @@ const Owner = () => {
 
       if(response.status == 201){
         setCurrentUser(response.data.user)
+        setLoading(false)
       }
 
-      } catch (error) {
-         if(error instanceof Error){
-        throw new Error(error.message)
-       }else{
-         throw new Error(String(error))
-    }
-      }
+      } catch (error: unknown) {
+  setLoading(false);
+
+  if (axios.isAxiosError(error)) {
+   throw new Error(error.response?.data?.message);
+  } else if (error instanceof Error) {
+    throw new Error(error.message);
+  } else {
+    throw new Error("Unexpected error");
+  }
+}
   } 
   
   useEffect(()=>{
       fetchUser()
   },[])
+
+  
+  if(isLoading){
+    return <Loader/>
+  }
 
   return (
     <div>
