@@ -1,29 +1,29 @@
 # Rating-System
 
-signup
+#### signup
 
 ![alt text](./frontend/src/assets/image.png)
 
-logIn
+#### logIn
 
 ![alt text](./frontend/src/assets/image-1.png)
 
-Admin dashboard
+#### Admin dashboard
 
 ![alt text](./frontend/src/assets/image-2.png)
 
 ![alt text](./frontend/src/assets/image-3.png)
 
-create user/store:-
+#### create user/store:-
 
 ![alt text](./frontend/src/assets/image-4.png)
 
 ![alt text](./frontend/src/assets/image-5.png)
 
-User Dashboard
+#### User Dashboard
 
 ![alt text](./frontend/src/assets/image-6.png)
 
-Owner Dashboard
+#### Owner Dashboard
 
 ![alt text](./frontend/src/assets/image-7.png)
