@@ -10,17 +10,24 @@ import { ContextProvider } from './context/Context'
 import Protected from './components/Auth/Protected'
 import VerifyEmail from './components/Auth/VerifyEmail'
 import ResetPassword from './components/Auth/ResetPassword'
+import { ErrorBoundary, type FallbackProps} from 'react-error-boundary'
+import FallBackUi from './shared/ErrorBoundary/FallBackUi'
+
 
 
 function App() {
 
- 
+  const fallbackRenderHandler = ({ error }:FallbackProps) => {  // here we can catch the error and return fallback ui 
+    console.log('error is:', error)
+    return <FallBackUi error={error} />
+  }
 
   return (
     <>
        <div className=''>
          <ContextProvider>
-          <BrowserRouter>
+          <ErrorBoundary fallbackRender={fallbackRenderHandler} >
+              <BrowserRouter>
              <Routes>
                <Route path='/' element={<LoginPage/>}></Route>
                <Route path='/signup' element={<SignUpPage/>}></Route>
@@ -44,6 +51,8 @@ function App() {
                 </Route>
              </Routes>
           </BrowserRouter>
+          </ErrorBoundary>
+          
          </ContextProvider>
        </div>
     </>
