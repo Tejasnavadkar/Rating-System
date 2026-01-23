@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { verifyToken } from "../utils/jwtHandler"
 
-interface CustomRequest extends Request {
+export interface CustomRequest extends Request {
   userId?: number; // or string, depending on your token payload
 }
 
